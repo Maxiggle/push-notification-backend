@@ -1,7 +1,8 @@
-const webpush = require('./web-push');
+const { notify } = require('./web-push');
 
 module.exports = {
-  '0 0 1 * * *': async ({ strapi }) => {
+  '*/1 * * * * *': async ({ strapi }) => {
+
     const expiredAssets = await strapi.entityService.findMany('api::asset.asset', {
       filters: { 
         validity_period: {
@@ -28,21 +29,7 @@ module.exports = {
         }
       });
 
-      const users = await strapi.entityService.findMany(
-        'api::user-notification-key.user-notification-key', {
-        filters: {
-          notification_subscription: {
-            $notNull: true
-          }
-        }
-      });
-
-      users.forEach(user => {
-        webpush.sendNotification(
-          user.subscription,
-          JSON.stringify(notice)
-        ).catch(console.error)
-      })
+      await notify(strapi, notice);
     }
   },
 };
