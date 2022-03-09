@@ -22,10 +22,12 @@ const notify = async (strapi, data) => {
   });
 
   users.forEach(user => {
-    webpush.sendNotification(
-      user.subscription,
-      JSON.stringify(data)
-    ).catch(console.error)
+    setTimeout(() => {
+      webpush.sendNotification(
+        user.subscription,
+        JSON.stringify(data)
+      ).catch(console.error)
+    } , 6000)
   })
 }
 

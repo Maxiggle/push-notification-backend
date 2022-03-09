@@ -30,7 +30,9 @@ module.exports = createCoreController('api::asset.asset', ({ strapi }) => ({
   
   async create (ctx) {
     const response = await super.create(ctx);
-    await notify(strapi, { message: `An asset ${response?.data?.attributes?.name} has been created` });
+    await notify(strapi, {
+      message: `An asset ${response?.data?.attributes?.name} has been created` 
+    });
     return response;
   }
 }));
