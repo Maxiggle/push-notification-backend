@@ -11,4 +11,27 @@ webpush.setVapidDetails(
   vapidKeys.privateKey
 )
 
-module.exports = webpush;
+const notify = async (strapi, data) => {
+  const users = await strapi.entityService.findMany(
+    'api::user-notification-key.user-notification-key', {
+    filters: {
+      subscription: {
+        $notNull: true
+      }
+    }
+  });
+
+  users.forEach(user => {
+    setTimeout(() => {
+      webpush.sendNotification(
+        user.subscription,
+        JSON.stringify(data)
+      ).catch(console.error)
+    } , 6000)
+  })
+}
+
+module.exports = {
+  webpush, 
+  notify,
+};
